@@ -1,0 +1,166 @@
+﻿@model ElectronicPartsExplorer.Models.ResistorModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h4>Resistor Value Calculator</h4>
+<hr />
+
+
+<div class="row">
+    <div class="col-md-4">
+        <canvas id="myCanvas" width="300" height="350" style="border:1px dotted #000000;">
+            Warning: browser does not support the HTML5 canvas tag
+        </canvas>
+
+        <script>
+
+            var c = document.getElementById("myCanvas");
+            var ctx = c.getContext("2d");
+
+            var left = 75;
+            var width = 200;
+            var height = 260;
+            // Draw resistor body
+            ctx.beginPath();
+            ctx.lineWidth = "2";
+            ctx.rect(left, 40, width, height);
+            ctx.moveTo(175, 10); ctx.lineTo(175, 40);
+            ctx.moveTo(175, 300); ctx.lineTo(175, 340);
+            ctx.stroke();
+
+            // Create Color Band
+            var y = 50;
+            var bandHeight = 30
+            // BAND A
+            var bandAColor = '@Model.ColorBandA';
+            ctx.beginPath();
+            ctx.lineWidth = "1";
+            ctx.fillStyle = bandAColor;
+            ctx.fillRect(left, y, width, bandHeight);
+            ctx.font = "16px Arial";
+            ctx.fillText("Band A", 10, y + 25);
+            ctx.stroke();
+
+            // BAND B
+            y = y + 50;
+            var bandBColor = '@Model.ColorBandB';
+            ctx.beginPath();
+            ctx.lineWidth = "1";
+            ctx.fillStyle = bandBColor;
+            ctx.fillRect(left, y, width, bandHeight);
+            ctx.font = "16px Arial";
+            ctx.fillText("Band B", 10, y + 25);
+            ctx.stroke();
+
+            // BAND C
+            y = y + 50
+            var bandCColor = '@Model.ColorBandC';
+            ctx.beginPath();
+            ctx.lineWidth = "1";
+            ctx.fillStyle = bandCColor;
+            ctx.fillRect(left, y, width, bandHeight);
+            ctx.font = "16px Arial";
+            ctx.fillText("Band C", 10, y + 25);
+            ctx.stroke();
+
+            // BAND D
+            y = y + 75
+            var bandCColor = '@Model.ColorBandD';
+            ctx.beginPath();
+            ctx.lineWidth = "1";
+            ctx.fillStyle = bandCColor;
+            ctx.fillRect(left, y, width, bandHeight);
+            ctx.font = "16px Arial";
+            ctx.fillText("Band D", 10, y + 25);
+            ctx.stroke();
+
+            function ChangeEventHandler() {
+                //alert('got event');
+                document.ResistorColorDecoder.submit();
+            }
+            
+        </script>
+    </div>
+    <div class="col-md-4">
+        <form asp-action="index" name="ResistorColorDecoder" id="ResistorColorDecoder" method="post">
+   
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">                                            
+                <div>
+                    <label asp-for="ColorBandA" class="control-label"></label>    
+                </div>
+                <select style="width:250px;height:30px" asp-for="ColorBandA" asp-items="@Model.ColorValueList" onchange="ChangeEventHandler()"></select>
+                <span asp-validation-for="ColorBandA" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div>
+                    <label asp-for="ColorBandB" class="control-label"></label>  
+                </div>                              
+                <select style="width:250px;height:30px" asp-for="ColorBandB" asp-items="@Model.ColorValueList"  onchange="ChangeEventHandler()"></select>
+                <span asp-validation-for="ColorBandB" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div>
+                    <label asp-for="ColorBandC" class="control-label"></label>
+                </div>                
+                <select style="width:250px;height:30px" asp-for="ColorBandC" asp-items="@Model.ColorValueList"  onchange="ChangeEventHandler()"></select>            
+                <span asp-validation-for="ColorBandC" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div>
+                    <label asp-for="ColorBandD" class="control-label"></label>
+                </div>                
+                <select style="width:250px;height:30px" asp-for="ColorBandD" asp-items="@Model.ToleranceValueList"  onchange="ChangeEventHandler()"></select>              
+                <span asp-validation-for="ColorBandD" class="text-danger"></span>
+            </div>
+            @*<div class="form-group">
+                <dev>
+                    <input type="submit" name="Submit" value="Calculate Ohm Value" class="btn btn-default" hidden="true" />
+                </dev>
+                
+            </div>*@
+        </form>
+        <form asp-action="index" name="ResistorColorDecoderResult" id="ResistorColorDecoderResult" >
+            <div><br/></div>
+            <div align="center"><b>Color Code Results</b><br /></div>  
+            <table class="table table-bordered table-responsive table-hover" style="width:100%">
+                <tr>
+                    <td width="250px" align="center">
+                        <div class="form-group">
+                            <label asp-for="Resistance" class="control-label" style="width:100px;height:30px; text-align:center"></label>
+                            <input asp-for="Resistance" ReadOnly="readonly" class="form-control" style="width:100px;height:30px; text-align:center" />
+                        </div>
+                    </td>
+                    <td width="250px" align="center">
+                        <div class="form-group">
+                            <label asp-for="Tolerance" class="control-label" style="width:100px;height:30px"></label>
+                            <input asp-for="Tolerance" class="form-control" ReadOnly="readonly" style="width:100px;height:30px" />
+                        </div>
+                    </td>
+                </tr>               
+                <tr>
+                    <td width="100%" align="center" colspan="2">                                            
+                        <div class="form-group">
+                            <label asp-for="AcceptableValueRange" class="control-label" style="width:250px;height:30px; text-align:center"></label>                        
+                            <input asp-for="AcceptableValueRange" class="form-control" ReadOnly="readonly" style="text-align:center; width:250px" />
+                            <span asp-validation-for="AcceptableValueRange" class="text-danger"></span>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <div class="form-group">
+                <label asp-for="Legend" class="control-label" ></label>     
+                <input asp-for="Legend" class="form-control" style="text-align:center" ReadOnly="readonly" />
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <a asp-controller="Home" asp-action="Index">Back to Home</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
